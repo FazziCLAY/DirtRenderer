@@ -50,4 +50,8 @@ public class Window {
     public double getFps() {
         return fps;
     }
+
+    public void delete() {
+        // TODO: 4/20/23 owo
+    }
 }

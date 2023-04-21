@@ -19,10 +19,20 @@ public class VAO {
         bind();
         vbo.bind();
 
-        // Add layouts
-        glEnableVertexAttribArray(elementsCount);
-        glVertexAttribPointer(elementsCount, 3, GL_FLOAT, false, 0, NULL);
-        elementsCount++;
+
+        for (BufferLayout.BufferElement current_element : vbo.getBufferLayout().elements)
+        {
+            glEnableVertexAttribArray(elementsCount);
+            glVertexAttribPointer(
+                    elementsCount,
+                    current_element.componentCount,
+                    current_element.openglType,
+                    false,
+                    vbo.getBufferLayout().m_stride,
+                    current_element.offset
+            );
+            elementsCount++;
+        }
     }
 
     public void bind() {
