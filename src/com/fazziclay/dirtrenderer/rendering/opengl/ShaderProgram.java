@@ -1,13 +1,20 @@
 package com.fazziclay.dirtrenderer.rendering.opengl;
 
+import com.fazziclay.dirtrenderer.math.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
+import java.util.HashMap;
+
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glDeleteShader;
 
 public class ShaderProgram {
 
-    private final int program;
-    private String compileLog = "";
+    private final int id;
+    private String compileLog = null;
     private boolean isCompile = true;
+    private final HashMap<String, Integer> uniformsLocations = new HashMap<>();
+    private final float[] mat4x4array = new float[4*4];
 
     public ShaderProgram(String vertex, String fragment) {
         int vs = glCreateShader(GL_VERTEX_SHADER);
@@ -16,7 +23,7 @@ public class ShaderProgram {
         int[] status = new int[1];
         glGetShaderiv(vs, GL_COMPILE_STATUS, status);
         if (status[0] == GL_FALSE) {
-            compileLog += "\n== VERTEX SHADER LOG ==\n"+glGetShaderInfoLog(vs);
+            log("Vertex shader", glGetShaderInfoLog(vs));
             isCompile = false;
         }
 
@@ -26,19 +33,58 @@ public class ShaderProgram {
         status = new int[1];
         glGetShaderiv(fs, GL_COMPILE_STATUS, status);
         if (status[0] == GL_FALSE) {
-            compileLog += "\n== FRAGMENT SHADER LOG ==\n"+glGetShaderInfoLog(fs);
+            log("Fragment shader", glGetShaderInfoLog(fs));
             isCompile = false;
         }
 
-        program = glCreateProgram();
-        glAttachShader(program, vs);
-        glAttachShader(program, fs);
-        glLinkProgram(program);
+        id = glCreateProgram();
+        glAttachShader(id, vs);
+        glAttachShader(id, fs);
+        glLinkProgram(id);
 
-        glDetachShader(program, vs);
-        glDetachShader(program, fs);
+        glDetachShader(id, vs);
+        glDetachShader(id, fs);
         glDeleteShader(vs);
         glDeleteShader(fs);
+    }
+
+    private void log(String s, String m) {
+        if (compileLog == null) compileLog = "";
+        compileLog += "== ["+s+"] ==\n" + m + "\n";
+    }
+
+    private int getCachedUniformLocation(String k) {
+        int l;
+        if (uniformsLocations.containsKey(k)) {
+            l = uniformsLocations.get(k);
+        } else {
+            uniformsLocations.put(k, l = glGetUniformLocation(id, k));
+        }
+        return l;
+    }
+
+    public void setMat4f(String k, Matrix4f mat) {
+        glUniformMatrix4fv(getCachedUniformLocation(k), false, mat.arrayColumn());
+    }
+
+    public void setMat4f(String k, org.joml.Matrix4f mat) {
+        glUniformMatrix4fv(getCachedUniformLocation(k), false, mat.get(mat4x4array));
+    }
+
+    public void setFloat(String k, float f) {
+        glUniform1f(getCachedUniformLocation(k), f);
+    }
+
+    public void setVec3f(String k, Vector3f vector3f) {
+        glUniform3f(getCachedUniformLocation(k), vector3f.x, vector3f.y, vector3f.z);
+    }
+
+    public void setVec4f(String k, Vector4f vector3f) {
+        glUniform4f(getCachedUniformLocation(k), vector3f.x, vector3f.y, vector3f.z, vector3f.w);
+    }
+
+    public void setInt(String k, int b) {
+        glUniform1i(getCachedUniformLocation(k), b);
     }
 
     public boolean isCompile() {
@@ -50,11 +96,11 @@ public class ShaderProgram {
     }
 
     public void bind() {
-        glUseProgram(program);
+        glUseProgram(id);
     }
 
     public void delete() {
-        glDeleteProgram(program);
+        glDeleteProgram(id);
     }
 
     public static void unbind() {

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DirtRenderer-alpha2">
+    <output-path>$PROJECT_DIR$/out/artifacts/DirtRenderer_alpha2</output-path>
+    <root id="archive" name="DirtRenderer-alpha2.jar">
+      <element id="module-output" name="DirtRenderer" />
+    </root>
+  </artifact>
+</component>

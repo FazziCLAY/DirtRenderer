@@ -1,11 +1,11 @@
 package com.fazziclay.dirtrenderer.rendering.opengl;
 
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class VAO {
     private final int id;
     private int elementsCount;
+    private int indicesCount;
 
     public VAO() {
         id = glGenVertexArrays();
@@ -20,8 +20,7 @@ public class VAO {
         vbo.bind();
 
 
-        for (BufferLayout.BufferElement current_element : vbo.getBufferLayout().elements)
-        {
+        for (BufferLayout.BufferElement current_element : vbo.getBufferLayout().elements) {
             glEnableVertexAttribArray(elementsCount);
             glVertexAttribPointer(
                     elementsCount,
@@ -33,6 +32,16 @@ public class VAO {
             );
             elementsCount++;
         }
+    }
+
+    public void setIndexBuffer(IndexBuffer ido) {
+        bind();
+        ido.bind();
+        indicesCount = ido.getCount();
+    }
+
+    public int getIndicesCount() {
+        return indicesCount;
     }
 
     public void bind() {

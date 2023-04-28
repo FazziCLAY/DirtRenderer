@@ -4,23 +4,23 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_INT;
 
 public class BufferLayout {
-    int m_stride;
-    BufferElement[] elements;
+    final int m_stride;
+    final BufferElement[] elements;
 
     public BufferLayout(BufferElement[] elements) {
         this.elements = elements;
         int offset = 0;
-        m_stride = 0;
-        for (BufferElement element : elements)
-        {
+        int m_stride_tmp = 0;
+        for (BufferElement element : elements) {
             element.offset = offset;
             offset += element.size;
-            m_stride += element.size;
+            m_stride_tmp += element.size;
         }
+        m_stride = m_stride_tmp;
     }
 
-    public static BufferLayout create(ShaderDataType... elements) {
-        BufferElement[] result = new BufferElement[elements.length];
+    public static BufferLayout create(final ShaderDataType... elements) {
+        final BufferElement[] result = new BufferElement[elements.length];
         int i = 0;
         for (ShaderDataType element : elements) {
             result[i] = new BufferElement(element);
@@ -30,13 +30,13 @@ public class BufferLayout {
     }
 
     public static class BufferElement {
-        public ShaderDataType type;
-        public int openglType;
-        public int componentCount;
-        public int size;
+        public final ShaderDataType type;
+        public final int openglType;
+        public final int componentCount;
+        public final int size;
         public int offset;
 
-        public BufferElement(ShaderDataType type) {
+        public BufferElement(final ShaderDataType type) {
             this.type = type;
             this.openglType = type.openglType;
             this.componentCount = type.count;
@@ -55,7 +55,7 @@ public class BufferLayout {
         INT3(GL_INT, 3, Integer.BYTES),
         INT4(GL_INT, 4, Integer.BYTES);
 
-        final int openglType;
+        private final int openglType;
         private final int count;
         private final int bytes;
 
