@@ -9,3 +9,11 @@ https://www.youtube.com/watch?v=nqBObY-0nSQ
 
 ## 20000 moving objects = 50 FPS
 ![image](https://user-images.githubusercontent.com/68351787/235071620-7a882be8-5265-440e-ba22-d4fea16aecdb.png)
+
+## Thanks
+**Big thanks for YouTube lessons:**
+* https://www.youtube.com/@SimpleCodingChannel <-- big thanks
+* https://www.youtube.com/@MihailRis
+* https://www.youtube.com/@Alex2772
+
+[*My discord*](https://discord.gg/Dv3pk7uMWv)
